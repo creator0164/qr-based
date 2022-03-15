@@ -57,6 +57,6 @@ class UserAuthenticationForm(forms.ModelForm):
 
                 if user is None:
                     raise forms.ValidationError(
-                        "Username and Password are not matched")
-            except:
-                raise forms.ValidationError("Username does not exist")
+                        'Username and Password are not matched')
+            except User.DoesNotExist:
+                raise forms.ValidationError('Username does not exist')

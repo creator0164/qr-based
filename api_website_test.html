@@ -14,13 +14,14 @@
     let accountsContainer = document.getElementById('accounts-container');
 
     let getAccounts = async () => {
-        let response = await fetch('http://127.0.0.1:8000/api/accounts/');
+        let response = await fetch('https://qrbased.pythonanywhere.com/api/accounts/');
         let accounts = await response.json();
 
         for(let i = 0; accounts.length > i; i++){
             let account = accounts[i];
             let row = `<div>
-                            <h4>id: ${account.id}  | username: ${account.username}</h4>
+                            <h4>id: ${account.id}  | username: ${account.qr_code}</h4>
+                            <img src="https://qrbased.pythonanywhere.com/${account.qr_code}">
                         </div>`;
             accountsContainer.innerHTML += row
         }

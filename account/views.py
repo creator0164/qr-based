@@ -1,9 +1,9 @@
 from multiprocessing import context
-import re
 from account.forms import UserAuthenticationForm, RegistrationForm
 from account.models import User
 
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
@@ -85,7 +85,8 @@ def register_view(request, user_http=False, *args, **kwargs):
             )
             email_send.fail_silently = False
             email_send.send()
-
+            messages.success(
+                request, 'Check your email to activate your account')
             return redirect('login-view')
         else:
             context['registration_form'] = form
@@ -116,6 +117,7 @@ def get_redirect_if_exists(request):
 
 
 def email_activation(request, uidb64, token):
+    context = {}
     try:
         t1 = 'not'
         uid = urlsafe_base64_decode(uidb64).decode()
@@ -128,8 +130,8 @@ def email_activation(request, uidb64, token):
         return HttpResponse('This activation link already used.')
     except:
         return HttpResponse('Activation fail please try again later.')
-
-    return HttpResponse(f'{user.email} You are now authenticated. Try to login to QR')
+    context['user'] = user
+    return render(request, 'base/email_send/email_activation_success.html', context)
 
 
 def setting_view(request, *args, **kwargs):
@@ -150,3 +152,7 @@ def profile_view(request, *args, **kwargs):
 
     context['qr'] = user.qr_code.url
     return render(request, 'base/profile.html', context)
+
+
+def error_404(request, exception):
+    return render(request, 'base/error_404.html')

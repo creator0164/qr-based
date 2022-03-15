@@ -16,8 +16,25 @@
                             <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
                             <div class="col-lg-6">
                                 <div class="p-5">
-                                    <div class="text-center">
+                                    <div class="text-center">            
                                         <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
+                                        {% for message in messages %}
+                                            {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                                            <div class="alert alert-success">{{message}}</div>
+                                            {% endif %}
+                                        {% endfor %}
+
+                                        {% for field in login_form %}
+                                            {% for error in field.errors %}
+                                            <div class="alert alert-danger">{{ error|striptags }}</div>
+                                            {% endfor %}
+                                        {% endfor %}
+                                        {% if login_form.non_field_errors %}
+                                        <div class="alert alert-danger">
+                                        {{login_form.non_field_errors|striptags}}
+                                        </div>
+
+                                        {% endif %}
                                     </div>
                                     <form class="user" action="" method="post">{% csrf_token %}
                                         <div class="form-group">
@@ -35,20 +52,6 @@
                                                     Me</label>
                                             </div>
                                         </div>
-
-                                        {% for field in login_form %}
-                                        <p>
-                                        {% for error in field.errors %}
-                                        <p style="color: red">{{ error }}</p>
-                                        {% endfor %}
-                                        </p>
-                                        {% endfor %}
-                                        {% if login_form.non_field_errors %}
-                                        <div style="color: red">
-                                        <p>{{login_form.non_field_errors}}</p>
-                                        </div>
-
-                                        {% endif %}
 
                                         <button type="submit" class="btn btn-primary btn-user btn-block">
                                           Login
